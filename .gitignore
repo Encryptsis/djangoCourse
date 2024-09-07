@@ -1,0 +1,13 @@
+# Ignore SQLite database
+db.sqlite3
+
+# Ignore Python bytecode files
+__pycache__/
+*.pyc
+
+# Ignore environment files
+.env
+
+# Ignore other unnecessary system files
+.DS_Store
+
