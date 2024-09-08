@@ -10,3 +10,8 @@ python manage.py migrate
 
 crear el superusuario.
 python manage.py createsuperuser
+
+para los archivos estaticos:
+docker-compose run django_app python webpersonal/manage.py migrate
+
+docker-compose run django_app python webpersonal/manage.py collectstatic
