@@ -1,51 +1,23 @@
-version: '1.0'
+version: "3"
 
 services:
- nginx:
-  build: ./nginx
-  ports:
-    - 8687:80
-  volumes:
-      - ./nginx:/etc/nginx/conf.d
-      - /static:/code/static
-  labels:
-      - "traefik.http.routers.nginx.rule=Host(`nginx.localhost`)"
-      - "traefik.http.services.nginx.loadbalancer.server.port=80"
-  depends_on:
-    - webpersonal
-  restart: "always"
-  networks:
-      - web
- 
- webpersonal:
-  build: ./webpersonal
-  command: sh -c "gunicorn webpersonal.wsgi:application --bind 0.0.0.0:8000"
-  volumes:
-      - /static:/code/static
-      - ./:/code
-  expose: 
-   - 8000
-  restart: "always"
-  networks:
-      - web
-  
- traefik:
-  image: traefik:v2.9
-  command:
-    - "--api.insecure=true"
-    - "--providers.docker=true"
-    - "--entrypoints.web.address=:80"
-  ports:
-    - "80:80"
-    - "8080:8080"
-  volumes:
-    - "/var/run/docker.sock:/var/run/docker.sock"
-  networks:
-      - web
+  django_app:
+    build: .
+    volumes:
+      - static:/code/static
+      - .:/code
+
+  nginx:
+    image: nginx:1.13
+    ports:
+      - 8000:80
+    volumes:
+      - ./config/nginx/conf.d:/etc/nginx/conf.d
+      - static:/code/static
+    depends_on:
+      - django_app
+
 volumes:
   postgres_data:
   static:
 
-networks:
-  web:
-    external: true
